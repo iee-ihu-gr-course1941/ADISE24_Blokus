@@ -15,6 +15,11 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 
+-- Dumping database structure for blokus
+CREATE DATABASE IF NOT EXISTS `blokus` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
+USE `blokus`;
+
+-- Dumping structure for πίνακας blokus.board
 CREATE TABLE IF NOT EXISTS `board` (
   `cell_id` int(11) NOT NULL AUTO_INCREMENT,
   `x` int(11) NOT NULL,
@@ -871,6 +876,22 @@ BEGIN
 END//
 DELIMITER ;
 
+-- Dumping structure for πίνακας blokus.gamehistory
+CREATE TABLE IF NOT EXISTS `gamehistory` (
+  `game_history_id` int(11) NOT NULL AUTO_INCREMENT,
+  `game_id` int(11) NOT NULL,
+  `winner_id` int(11) DEFAULT NULL,
+  `game_duration` int(11) DEFAULT NULL,
+  `date` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`game_history_id`),
+  KEY `game_id` (`game_id`),
+  KEY `winner_id` (`winner_id`),
+  CONSTRAINT `gamehistory_ibfk_1` FOREIGN KEY (`game_id`) REFERENCES `gamestatus` (`game_id`),
+  CONSTRAINT `gamehistory_ibfk_2` FOREIGN KEY (`winner_id`) REFERENCES `players` (`player_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Dumping data for table blokus.gamehistory: ~0 rows (approximately)
+
 -- Dumping structure for πίνακας blokus.gamestatus
 CREATE TABLE IF NOT EXISTS `gamestatus` (
   `game_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -964,6 +985,21 @@ INSERT INTO `pieces` (`piece_id`, `shape`, `size`, `player_id`) VALUES
 	(41, 'Pentomino ', 5, 2),
 	(42, 'Pentomino ', 5, 2);
 
+-- Dumping structure for πίνακας blokus.playerpieces
+CREATE TABLE IF NOT EXISTS `playerpieces` (
+  `player_piece_id` int(11) NOT NULL AUTO_INCREMENT,
+  `player_id` int(11) NOT NULL,
+  `piece_id` int(11) NOT NULL,
+  `is_used` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`player_piece_id`),
+  KEY `player_id` (`player_id`),
+  KEY `piece_id` (`piece_id`),
+  CONSTRAINT `playerpieces_ibfk_1` FOREIGN KEY (`player_id`) REFERENCES `players` (`player_id`),
+  CONSTRAINT `playerpieces_ibfk_2` FOREIGN KEY (`piece_id`) REFERENCES `pieces` (`piece_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Dumping data for table blokus.playerpieces: ~0 rows (approximately)
+
 -- Dumping structure for πίνακας blokus.players
 CREATE TABLE IF NOT EXISTS `players` (
   `player_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -977,6 +1013,21 @@ CREATE TABLE IF NOT EXISTS `players` (
 INSERT INTO `players` (`player_id`, `player_name`, `color`) VALUES
 	(1, NULL, 'Κόκκινο'),
 	(2, NULL, 'Μπλε');
+
+-- Dumping structure for πίνακας blokus.scores
+CREATE TABLE IF NOT EXISTS `scores` (
+  `score_id` int(11) NOT NULL AUTO_INCREMENT,
+  `game_id` int(11) NOT NULL,
+  `player_id` int(11) NOT NULL,
+  `score` int(11) NOT NULL,
+  PRIMARY KEY (`score_id`),
+  KEY `game_id` (`game_id`),
+  KEY `player_id` (`player_id`),
+  CONSTRAINT `scores_ibfk_1` FOREIGN KEY (`game_id`) REFERENCES `gamestatus` (`game_id`),
+  CONSTRAINT `scores_ibfk_2` FOREIGN KEY (`player_id`) REFERENCES `players` (`player_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Dumping data for table blokus.scores: ~0 rows (approximately)
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
