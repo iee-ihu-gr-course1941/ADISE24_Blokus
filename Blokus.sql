@@ -14,6 +14,18 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
+-- Dumping structure for πίνακας blokus.board
+CREATE TABLE IF NOT EXISTS `board` (
+  `cell_id` int(11) NOT NULL AUTO_INCREMENT,
+  `x` int(11) NOT NULL,
+  `y` int(11) NOT NULL,
+  `occupied_by` int(11) DEFAULT NULL,
+  PRIMARY KEY (`cell_id`),
+  UNIQUE KEY `unique_position` (`x`,`y`),
+  KEY `fk_board_piece` (`occupied_by`),
+  CONSTRAINT `fk_board_piece` FOREIGN KEY (`occupied_by`) REFERENCES `pieces` (`piece_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=401 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 -- Dumping data for table blokus.board: ~400 rows (approximately)
 INSERT INTO `board` (`cell_id`, `x`, `y`, `occupied_by`) VALUES
 	(1, 0, 0, NULL),
@@ -416,6 +428,18 @@ INSERT INTO `board` (`cell_id`, `x`, `y`, `occupied_by`) VALUES
 	(398, 19, 17, NULL),
 	(399, 19, 18, NULL),
 	(400, 19, 19, NULL);
+
+-- Dumping structure for πίνακας blokus.board_empty
+CREATE TABLE IF NOT EXISTS `board_empty` (
+  `cell_id` int(11) NOT NULL AUTO_INCREMENT,
+  `x` int(11) NOT NULL,
+  `y` int(11) NOT NULL,
+  `occupied_by` int(11) DEFAULT NULL,
+  PRIMARY KEY (`cell_id`) USING BTREE,
+  UNIQUE KEY `unique_position` (`x`,`y`) USING BTREE,
+  KEY `FK_board_empty_pieces` (`occupied_by`),
+  CONSTRAINT `FK_board_empty_pieces` FOREIGN KEY (`occupied_by`) REFERENCES `pieces` (`piece_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=401 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
 -- Dumping data for table blokus.board_empty: ~400 rows (approximately)
 INSERT INTO `board_empty` (`cell_id`, `x`, `y`, `occupied_by`) VALUES
@@ -820,11 +844,80 @@ INSERT INTO `board_empty` (`cell_id`, `x`, `y`, `occupied_by`) VALUES
 	(399, 19, 18, NULL),
 	(400, 19, 19, NULL);
 
+-- Dumping structure for procedure blokus.clean_board
+DELIMITER //
+CREATE PROCEDURE `clean_board`()
+BEGIN
+     REPLACE INTO board SELECT * FROM board_empty;
+END//
+DELIMITER ;
+
+-- Dumping structure for procedure blokus.FillBoard
+DELIMITER //
+CREATE PROCEDURE `FillBoard`()
+BEGIN
+    DECLARE x INT DEFAULT 0;
+    DECLARE y INT DEFAULT 0;
+
+   
+    WHILE x < 20 DO
+        SET y = 0;
+        WHILE y < 20 DO
+            INSERT INTO Board (x, y) VALUES (x, y);
+            SET y = y + 1;
+        END WHILE;
+        SET x = x + 1;
+    END WHILE;
+END//
+DELIMITER ;
+
+-- Dumping structure for πίνακας blokus.gamestatus
+CREATE TABLE IF NOT EXISTS `gamestatus` (
+  `game_id` int(11) NOT NULL AUTO_INCREMENT,
+  `current_player_id` int(11) DEFAULT NULL,
+  `game_state` enum('In Progress','Finished','Paused') NOT NULL,
+  `moves_count` int(11) DEFAULT 0,
+  `winner_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`game_id`),
+  KEY `current_player_id` (`current_player_id`),
+  KEY `winner_id` (`winner_id`),
+  CONSTRAINT `gamestatus_ibfk_1` FOREIGN KEY (`current_player_id`) REFERENCES `players` (`player_id`),
+  CONSTRAINT `gamestatus_ibfk_2` FOREIGN KEY (`winner_id`) REFERENCES `players` (`player_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 -- Dumping data for table blokus.gamestatus: ~1 rows (approximately)
 INSERT INTO `gamestatus` (`game_id`, `current_player_id`, `game_state`, `moves_count`, `winner_id`) VALUES
 	(1, 1, 'Paused', 0, NULL);
 
+-- Dumping structure for πίνακας blokus.moves
+CREATE TABLE IF NOT EXISTS `moves` (
+  `move_id` int(11) NOT NULL AUTO_INCREMENT,
+  `player_id` int(11) NOT NULL,
+  `piece_id` int(11) NOT NULL,
+  `x` int(11) NOT NULL,
+  `y` int(11) NOT NULL,
+  `rotation` enum('0','90','180','270') NOT NULL,
+  `flipped` tinyint(1) NOT NULL DEFAULT 0,
+  `move_time` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`move_id`),
+  KEY `player_id` (`player_id`),
+  KEY `piece_id` (`piece_id`),
+  CONSTRAINT `moves_ibfk_1` FOREIGN KEY (`player_id`) REFERENCES `players` (`player_id`),
+  CONSTRAINT `moves_ibfk_2` FOREIGN KEY (`piece_id`) REFERENCES `pieces` (`piece_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 -- Dumping data for table blokus.moves: ~0 rows (approximately)
+
+-- Dumping structure for πίνακας blokus.pieces
+CREATE TABLE IF NOT EXISTS `pieces` (
+  `piece_id` int(11) NOT NULL AUTO_INCREMENT,
+  `shape` varchar(10) NOT NULL,
+  `size` int(11) NOT NULL,
+  `player_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`piece_id`),
+  KEY `player_id` (`player_id`),
+  CONSTRAINT `pieces_ibfk_1` FOREIGN KEY (`player_id`) REFERENCES `players` (`player_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Dumping data for table blokus.pieces: ~42 rows (approximately)
 INSERT INTO `pieces` (`piece_id`, `shape`, `size`, `player_id`) VALUES
@@ -870,6 +963,15 @@ INSERT INTO `pieces` (`piece_id`, `shape`, `size`, `player_id`) VALUES
 	(40, 'Pentomino ', 5, 2),
 	(41, 'Pentomino ', 5, 2),
 	(42, 'Pentomino ', 5, 2);
+
+-- Dumping structure for πίνακας blokus.players
+CREATE TABLE IF NOT EXISTS `players` (
+  `player_id` int(11) NOT NULL AUTO_INCREMENT,
+  `player_name` varchar(50) DEFAULT NULL,
+  `color` enum('Κόκκινο','Μπλε') NOT NULL,
+  PRIMARY KEY (`color`),
+  KEY `player_id` (`player_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Dumping data for table blokus.players: ~2 rows (approximately)
 INSERT INTO `players` (`player_id`, `player_name`, `color`) VALUES
