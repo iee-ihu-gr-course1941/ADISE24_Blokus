@@ -14,7 +14,7 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
--- Dumping structure for πίνακας blokus.board
+
 CREATE TABLE IF NOT EXISTS `board` (
   `cell_id` int(11) NOT NULL AUTO_INCREMENT,
   `x` int(11) NOT NULL,
