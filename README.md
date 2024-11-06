@@ -1,1 +1,1 @@
-# ADISE24_Blokus
+# ADISE24_B
