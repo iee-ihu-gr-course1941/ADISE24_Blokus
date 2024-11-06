@@ -1,7 +1,7 @@
 -- --------------------------------------------------------
 -- Διακομιστής:                  127.0.0.1
--- Έκδοση διακομιστή:            10.11.6-MariaDB-0+deb12u1-log - Debian 12
--- Λειτ. σύστημα διακομιστή:     debian-linux-gnu
+-- Έκδοση διακομιστή:            10.4.32-MariaDB - mariadb.org binary distribution
+-- Λειτ. σύστημα διακομιστή:     Win64
 -- HeidiSQL Έκδοση:              12.8.0.6908
 -- --------------------------------------------------------
 
@@ -13,11 +13,6 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
-
--- Dumping database structure for blokus
-CREATE DATABASE IF NOT EXISTS `blokus` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
-USE `blokus`;
 
 -- Dumping structure for πίνακας blokus.board
 CREATE TABLE IF NOT EXISTS `board` (
@@ -896,9 +891,9 @@ CREATE TABLE IF NOT EXISTS `gamehistory` (
 CREATE TABLE IF NOT EXISTS `gamestatus` (
   `game_id` int(11) NOT NULL AUTO_INCREMENT,
   `current_player_id` int(11) DEFAULT NULL,
-  `game_state` enum('In Progress','Finished','Paused') NOT NULL,
-  `moves_count` int(11) DEFAULT 0,
+  `game_state` enum('not active','initialized','started','ended','aborded') NOT NULL DEFAULT 'not active',
   `winner_id` int(11) DEFAULT NULL,
+  `lastchange` timestamp NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`game_id`),
   KEY `current_player_id` (`current_player_id`),
   KEY `winner_id` (`winner_id`),
@@ -907,8 +902,8 @@ CREATE TABLE IF NOT EXISTS `gamestatus` (
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Dumping data for table blokus.gamestatus: ~1 rows (approximately)
-INSERT INTO `gamestatus` (`game_id`, `current_player_id`, `game_state`, `moves_count`, `winner_id`) VALUES
-	(1, 1, 'Paused', 0, NULL);
+INSERT INTO `gamestatus` (`game_id`, `current_player_id`, `game_state`, `winner_id`, `lastchange`) VALUES
+	(1, 1, 'not active', NULL, '2024-11-06 13:26:03');
 
 -- Dumping structure for πίνακας blokus.moves
 CREATE TABLE IF NOT EXISTS `moves` (
