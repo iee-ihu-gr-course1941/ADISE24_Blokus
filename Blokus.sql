@@ -896,9 +896,9 @@ CREATE TABLE IF NOT EXISTS `gamehistory` (
 CREATE TABLE IF NOT EXISTS `gamestatus` (
   `game_id` int(11) NOT NULL AUTO_INCREMENT,
   `current_player_id` int(11) DEFAULT NULL,
-  `game_state` enum('In Progress','Finished','Paused') NOT NULL,
-  `moves_count` int(11) DEFAULT 0,
+  `game_state` enum('not active','initialized','started','ended','aborded') NOT NULL DEFAULT 'not active',
   `winner_id` int(11) DEFAULT NULL,
+  `lastchange` timestamp NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`game_id`),
   KEY `current_player_id` (`current_player_id`),
   KEY `winner_id` (`winner_id`),
@@ -907,8 +907,8 @@ CREATE TABLE IF NOT EXISTS `gamestatus` (
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Dumping data for table blokus.gamestatus: ~1 rows (approximately)
-INSERT INTO `gamestatus` (`game_id`, `current_player_id`, `game_state`, `moves_count`, `winner_id`) VALUES
-	(1, 1, 'Paused', 0, NULL);
+INSERT INTO `gamestatus` (`game_id`, `current_player_id`, `game_state`, `winner_id`, `lastchange`) VALUES
+	(1, 1, 'not active', NULL, '2024-11-06 13:26:03');
 
 -- Dumping structure for πίνακας blokus.moves
 CREATE TABLE IF NOT EXISTS `moves` (
