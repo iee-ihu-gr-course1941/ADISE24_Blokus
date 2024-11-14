@@ -1,5 +1,7 @@
 <?php
 
+include_path='C:\xampp\php\PEAR';
+
 require_once "../lib/dbconnect.php";
 require_once "../lib/board.php";
 
