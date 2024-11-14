@@ -1,4 +1,3 @@
-include_path='C:\xampp\php\PEAR'
 <?php
 
 
