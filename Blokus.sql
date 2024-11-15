@@ -849,6 +849,8 @@ DELIMITER //
 CREATE PROCEDURE `clean_board`()
 BEGIN
      REPLACE INTO board SELECT * FROM board_empty;
+     UPDATE players SET player_name=NULL;
+     UPDATE game_status SET status='not active', current_player=NULL, result=NULL;
 END//
 DELIMITER ;
 
@@ -901,7 +903,7 @@ CREATE TABLE IF NOT EXISTS `gamestatus` (
   CONSTRAINT `gamestatus_ibfk_2` FOREIGN KEY (`winner_id`) REFERENCES `players` (`player_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table blokus.gamestatus: ~1 rows (approximately)
+-- Dumping data for table blokus.gamestatus: ~0 rows (approximately)
 INSERT INTO `gamestatus` (`game_id`, `current_player_id`, `game_state`, `winner_id`, `lastchange`) VALUES
 	(1, 1, 'not active', NULL, '2024-11-06 13:26:03');
 
