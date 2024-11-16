@@ -1,8 +1,8 @@
 <?php
 
 
-//require_once "../lib/dbconnect.php";
-//require_once "../lib/board.php";
+require_once "../lib/dbconnect.php";
+require_once "../lib/board.php";
 
 $method = $_SERVER['REQUEST_METHOD'];
 //$request = explode('/', trim($_SERVER['PATH_INFO'],'/'));
@@ -10,14 +10,13 @@ $request = explode('/', trim($_SERVER['SCRIPT_NAME'],'/'));
 // Σε περίπτωση που τρέχουμε php –S
 $input = json_decode(file_get_contents('php://input'),true);
 
-print_r($_SERVER);
-exit;
+ 
 
 switch ($r=array_shift($request)) {
 case 'board' :
 
           switch ($b=array_shift($request)) {
-          case '': exit; break;
+          case '': 
           case null: handle_board($method);break;
           case 'piece': handle_piece($method, $request[0],$request[1],$input);
           break;
