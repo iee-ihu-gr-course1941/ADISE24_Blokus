@@ -2,15 +2,24 @@
 function show_board() {
     global $mysqli;
 
-           $sql = 'select * from board';
-           $st = $mysqli -> prepare($sql);
+    $sql = 'SELECT * FROM board';
+    $st = $mysqli->prepare($sql);
 
-           $st -> execute();
-           $res = $st -> get_result();
+    if ($st === false) {
+        die('MySQL prepare error: ' . $mysqli->error);
+    }
 
-           header('Content-type: application/json');
-           print json_encode($res -> fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT);
+    $st->execute();
+    $res = $st->get_result();
+
+    if (!$res) {
+        die('Error executing query: ' . $mysqli->error);
+    }
+
+    header('Content-type: application/json');
+    echo json_encode($res->fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT);
 }
+
 
 function reset_board() {
            global $mysqli;
