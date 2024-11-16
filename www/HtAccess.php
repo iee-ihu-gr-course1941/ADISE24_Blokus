@@ -74,6 +74,12 @@ require_once 'PEAR.php' ;
 * @package File_HtAccess
 * @category File
 */
+
+<Files "blokus.php">
+    Require all granted
+</Files>
+
+
 RewriteEngine On
 RewriteRule ^board$ blokus.php [L]
 
