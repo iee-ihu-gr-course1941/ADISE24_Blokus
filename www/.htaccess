@@ -1,6 +1,0 @@
-Options +FollowSymlinks
-RewriteEngine On
-DirectoryIndex blokus.php
-<Files "blokus.php">
-    Require all granted
-</Files>
