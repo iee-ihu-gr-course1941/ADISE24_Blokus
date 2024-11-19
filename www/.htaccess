@@ -1,3 +1,6 @@
-<Files "blokus.php">
-    Require all granted
-</Files>
+php_flag display_startup_errors on
+php_flag display_errors on
+php_flag html_errors on
+php_flag log_errors on
+php_value error_log /home/students/iee2020177/PHP_errors.log
+
